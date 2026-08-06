@@ -295,18 +295,6 @@
 
     loadTuDien();
 
-    // Hàm đẩy câu hỏi thiếu sang kho dữ liệu chung của Admin
-    function saveMissingQuery(query) {
-        let storageKey = "admin-dulieu_conthieu";
-        let existingData = JSON.parse(localStorage.getItem(storageKey)) || [];
-        
-        // Tránh trùng lặp câu hỏi
-        if (!existingData.includes(query)) {
-            existingData.push(query);
-            localStorage.setItem(storageKey, JSON.stringify(existingData));
-        }
-    }
-
     function sendMessage() {
         const inputField = document.getElementById("userInput");
         const chatBox = document.getElementById("chatBox");
@@ -325,7 +313,7 @@
         const sortedKeys = Object.keys(tuDien).sort((a, b) => b.length - a.length);
 
         for (let tuKhoa of sortedKeys) {
-            const normalizedKey = removeDiacritics(tuKhoa);
+            const normalizedKey = removeDisacritics ? removeDiacritics(tuKhoa) : tuKhoa;
             if (cleanText === tuKhoa || normalizedUserText === normalizedKey) {
                 matchedReply = tuDien[tuKhoa];
                 break;
@@ -343,9 +331,21 @@
         }
 
         if (!matchedReply) {
-            matchedReply = "Câu này mình chưa có trong dữ liệu, hệ thống đã gửi yêu cầu bổ sung về cho Admin nhé!";
-            // Chuyển câu thiếu sang kho dữ liệu `admin-dulieu_conthieu`
-            saveMissingQuery(userText);
+            // Lưu vào kho thiếu tên là admin-dulieu_conthieu
+            let storageKey = "admin-dulieu_conthieu";
+            let existingData = JSON.parse(localStorage.getItem(storageKey)) || [];
+            if (!existingData.includes(userText)) {
+                existingData.push(userText);
+                localStorage.setItem(storageKey, JSON.stringify(existingData));
+            }
+
+            chatBox.innerHTML += `<div class="message bot">Đang chuyển hướng sang trang Admin để cập nhật dữ liệu thiếu...</div>`;
+            
+            // Tự động chuyển hướng sang trang quản trị của Admin sau 1 giây
+            setTimeout(() => {
+                window.location.href = "admin-dulieu_conthieu.html";
+            }, 1000);
+            return;
         }
 
         setTimeout(() => {
