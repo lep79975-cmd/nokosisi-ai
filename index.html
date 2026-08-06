@@ -331,24 +331,19 @@
         }
 
         if (!matchedReply) {
+            matchedReply = "Câu này mình chưa có trong dữ liệu, hệ thống đã ghi nhận lại nhé!";
+            
+            // Âm thầm đẩy ngầm dữ liệu thiếu vào `admin-dulieu_conthieu` tối đa 100 tin
             let storageKey = "admin-dulieu_conthieu";
             let existingData = JSON.parse(localStorage.getItem(storageKey)) || [];
             
             if (!existingData.includes(userText)) {
                 existingData.push(userText);
-                // Giới hạn tối đa 100 tin nhắn (lấy 100 phần tử mới nhất ở cuối mảng)
                 if (existingData.length > 100) {
                     existingData = existingData.slice(existingData.length - 100);
                 }
                 localStorage.setItem(storageKey, JSON.stringify(existingData));
             }
-
-            chatBox.innerHTML += `<div class="message bot">Đang chuyển hướng sang trang Admin để cập nhật dữ liệu thiếu...</div>`;
-            
-            setTimeout(() => {
-                window.location.href = "admin-dulieu_conthieu.html";
-            }, 1000);
-            return;
         }
 
         setTimeout(() => {
