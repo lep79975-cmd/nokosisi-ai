@@ -333,7 +333,7 @@
         if (!matchedReply) {
             matchedReply = "Câu này mình chưa có trong dữ liệu, hệ thống đã ghi nhận lại nhé!";
             
-            // Âm thầm đẩy ngầm dữ liệu thiếu vào `admin-dulieu_conthieu` tối đa 100 tin
+            // Âm thầm lưu ngầm dữ liệu thiếu vào localStorage (tối đa 100 tin mới nhất)
             let storageKey = "admin-dulieu_conthieu";
             let existingData = JSON.parse(localStorage.getItem(storageKey)) || [];
             
