@@ -295,6 +295,18 @@
 
     loadTuDien();
 
+    // Hàm đẩy câu hỏi thiếu sang kho dữ liệu chung của Admin
+    function saveMissingQuery(query) {
+        let storageKey = "admin-dulieu_conthieu";
+        let existingData = JSON.parse(localStorage.getItem(storageKey)) || [];
+        
+        // Tránh trùng lặp câu hỏi
+        if (!existingData.includes(query)) {
+            existingData.push(query);
+            localStorage.setItem(storageKey, JSON.stringify(existingData));
+        }
+    }
+
     function sendMessage() {
         const inputField = document.getElementById("userInput");
         const chatBox = document.getElementById("chatBox");
@@ -331,7 +343,9 @@
         }
 
         if (!matchedReply) {
-            matchedReply = "Câu này mình chưa có trong dữ liệu Notepad, bạn bổ sung thêm nhé!";
+            matchedReply = "Câu này mình chưa có trong dữ liệu, hệ thống đã gửi yêu cầu bổ sung về cho Admin nhé!";
+            // Chuyển câu thiếu sang kho dữ liệu `admin-dulieu_conthieu`
+            saveMissingQuery(userText);
         }
 
         setTimeout(() => {
